@@ -14,6 +14,10 @@ import 'physics/scroll_physics.dart';
 typedef EasyRefreshChildBuilder = Widget Function(
     BuildContext context, ScrollPhysics physics, Widget header, Widget footer);
 
+abstract class EasyRefreshProtocol{
+  onNoti(ScrollNotification noti);
+}
+
 /// EasyRefresh
 /// 下拉刷新,上拉加载组件
 class EasyRefresh extends StatefulWidget {
@@ -110,6 +114,9 @@ class EasyRefresh extends StatefulWidget {
   /// 触发时超过距离
   static double callOverExtent = 30.0;
 
+  /// 设置代理
+  final EasyRefreshProtocol delegate;
+
   /// 默认构造器
   /// 将child转换为CustomScrollView可用的slivers
   EasyRefresh({
@@ -129,6 +136,7 @@ class EasyRefresh extends StatefulWidget {
     this.emptyWidget,
     this.topBouncing = true,
     this.bottomBouncing = true,
+    this.delegate,
     this.behavior = const EmptyOverScrollScrollBehavior(),
     @required this.child,
   })  : this.scrollDirection = null,
@@ -174,6 +182,7 @@ class EasyRefresh extends StatefulWidget {
     this.emptyWidget,
     this.topBouncing = true,
     this.bottomBouncing = true,
+    this.delegate,
     this.behavior = const EmptyOverScrollScrollBehavior(),
     @required this.slivers,
   })  : this.builder = null,
@@ -196,6 +205,7 @@ class EasyRefresh extends StatefulWidget {
     this.firstRefresh,
     this.topBouncing = true,
     this.bottomBouncing = true,
+    this.delegate,
     this.behavior = const EmptyOverScrollScrollBehavior(),
     @required this.builder,
   })  : this.scrollDirection = null,
@@ -469,6 +479,9 @@ class _EasyRefreshState extends State<EasyRefresh> {
     }
     return ScrollNotificationListener(
       onNotification: (notification) {
+        if (widget.delegate!=null){
+          widget.delegate.onNoti(notification);
+        }
         return false;
       },
       onFocus: (focus) {

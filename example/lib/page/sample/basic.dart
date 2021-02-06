@@ -6,6 +6,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_easyrefresh/easy_refresh.dart';
 import 'package:example/generated/i18n.dart';
 
+
+
 /// 基本示例(经典样式)页面
 class BasicPage extends StatefulWidget {
   /// 标题
@@ -17,7 +19,7 @@ class BasicPage extends StatefulWidget {
   _BasicPageState createState() => _BasicPageState();
 }
 
-class _BasicPageState extends State<BasicPage> {
+class _BasicPageState extends State<BasicPage> implements EasyRefreshProtocol{
   EasyRefreshController _controller;
   ScrollController _scrollController;
 
@@ -57,7 +59,7 @@ class _BasicPageState extends State<BasicPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(widget.title),
+        title: Text(widget.title+'123'),
         backgroundColor: Colors.white,
         actions: <Widget>[
           IconButton(
@@ -75,6 +77,7 @@ class _BasicPageState extends State<BasicPage> {
         child: Container(
           height: _direction == Axis.vertical ? double.infinity : 210.0,
           child: EasyRefresh.custom(
+            delegate: this,
             enableControlFinishRefresh: true,
             enableControlFinishLoad: true,
             taskIndependence: _taskIndependence,
@@ -421,5 +424,16 @@ class _BasicPageState extends State<BasicPage> {
         );
       },
     );
+  }
+
+  @override
+  onNoti(ScrollNotification noti) {
+      if (noti is ScrollStartNotification){
+        print('开始滚动了');
+      }
+
+      if (noti is ScrollEndNotification){
+        print('停止滚动了');
+      }
   }
 }
